@@ -39,7 +39,15 @@ const CustomLoginPage: React.FC = () => {
             </form>
 
             <div style={{ marginTop: 16 }}>
-                <a href="/public">/public (인증 불필요)</a>
+                <a
+                    href="/public"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = '/public';
+                    }}
+                >
+                    /public (인증 불필요)
+                </a>
             </div>
         </div>
     )
