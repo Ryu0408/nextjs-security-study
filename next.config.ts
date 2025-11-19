@@ -1,28 +1,29 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+const nextConfig = {
   reactCompiler: true,
   async rewrites() {
     return [
       {
         source: '/hello',
-        destination: 'http://localhost:8084/hello',
+        destination: `${backendUrl}/hello`,
       },
       {
         source: '/public',
-        destination: 'http://localhost:8084/public',
+        destination: `${backendUrl}/public`,
       },
       {
         source: '/login',
-        destination: 'http://localhost:8084/login',
+        destination: `${backendUrl}/login`,
       },
       {
         source: '/logout',
-        destination: 'http://localhost:8084/logout',
+        destination: `${backendUrl}/logout`,
       },
     ]
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig
