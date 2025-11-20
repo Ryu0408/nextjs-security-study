@@ -1,8 +1,8 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactCompiler: true,
   async rewrites() {
     return [
@@ -22,8 +22,13 @@ const nextConfig = {
         source: '/logout',
         destination: `${backendUrl}/logout`,
       },
-    ]
+      {
+        // 회원가입 등 API 공통 프록시
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
