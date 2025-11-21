@@ -33,6 +33,14 @@ const CustomLoginPage: React.FC = () => {
                     />
                 </div>
 
+                {/* ★ Remember-Me 체크박스 */}
+                <div style={{ marginBottom: 12 }}>
+                    <label>
+                        <input type="checkbox" name="remember-me" style={{ marginRight: 4 }} />
+                        로그인 상태 유지
+                    </label>
+                </div>
+
                 <button type="submit" style={{ width: '100%', padding: 10 }}>
                     로그인
                 </button>
