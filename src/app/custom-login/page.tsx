@@ -1,12 +1,28 @@
 'use client'
-
+import { useSearchParams } from 'next/navigation'
 import React from 'react'
 
 const CustomLoginPage: React.FC = () => {
+    const searchParams = useSearchParams()
+    const error = searchParams.get('error')
+
+    let errorMessage: string | null = null
+    if (error === 'unauthorized') {
+        errorMessage = '로그인이 필요한 페이지입니다.'
+    } else if (error === 'bad_credentials') {
+        errorMessage = '아이디 또는 비밀번호가 올바르지 않습니다.'
+    }
+
     return (
         <div style={{ maxWidth: 400, margin: '40px auto', fontFamily: 'sans-serif' }}>
             <h2>커스텀 로그인 페이지</h2>
             <p>Spring Security + Next.js(TypeScript) 연동</p>
+
+            {errorMessage && (
+                <div style={{ marginBottom: 12, color: 'red' }}>
+                    {errorMessage}
+                </div>
+            )}
 
             {/* 이 form은 Next 서버가 아니라 Spring Security로 직접 POST됨 */}
             <form method="post" action="/login">
