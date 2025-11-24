@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         destination: `${backendUrl}/logout`,
       },
       {
+        source: '/api/csrf-token',
+        destination: `${backendUrl}/api/csrf-token`
+      },
+      {
         source: '/admin/:path*',
         destination: `${backendUrl}/admin/:path*`,
       },

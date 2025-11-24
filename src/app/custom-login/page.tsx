@@ -1,13 +1,34 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
-import React from 'react'
 
-const CustomLoginPage: React.FC = () => {
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+
+type CsrfTokenResponse = {
+    headerName: string
+    parameterName: string
+    token: string
+}
+
+export default function CustomLoginPage() {
     const searchParams = useSearchParams()
     const error = searchParams.get('error')
 
-    const getErrorMessage = (code: string | null) => {
-        switch (code) {
+    const [csrf, setCsrf] = useState<CsrfTokenResponse | null>(null)
+
+    useEffect(() => {
+        // 페이지 로드 시 CSRF 토큰 조회
+        fetch('/api/csrf-token', {
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((data: CsrfTokenResponse) => setCsrf(data))
+            .catch((e) => {
+                console.error('Failed to fetch CSRF token', e)
+            })
+    }, [])
+
+    const errorMessage = (() => {
+        switch (error) {
             case 'bad_credentials':
                 return '아이디 또는 비밀번호가 올바르지 않습니다.'
             case 'locked':
@@ -22,9 +43,7 @@ const CustomLoginPage: React.FC = () => {
             default:
                 return null
         }
-    }
-
-    const errorMessage = getErrorMessage(error)
+    })()
 
     return (
         <main style={{ maxWidth: 400, margin: '40px auto', fontFamily: 'sans-serif' }}>
@@ -49,16 +68,23 @@ const CustomLoginPage: React.FC = () => {
                         <input name="password" type="password" />
                     </label>
                 </div>
+
+                {/* CSRF 토큰 hidden 필드 */}
+                {csrf && (
+                    <input type="hidden" name={csrf.parameterName} value={csrf.token} />
+                )}
+
                 <div>
                     <label>
                         <input type="checkbox" name="remember-me" />
                         로그인 상태 유지
                     </label>
                 </div>
-                <button type="submit">로그인</button>
+
+                <button type="submit" disabled={!csrf}>
+                    로그인
+                </button>
             </form>
         </main>
     )
 }
-
-export default CustomLoginPage

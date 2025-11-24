@@ -1,14 +1,35 @@
 // app/(protected)/layout.tsx
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
 import { fetchMe } from '@/lib/auth'
 import Link from 'next/link'
+
+type CsrfTokenResponse = {
+    headerName: string
+    parameterName: string
+    token: string
+}
 
 export default async function ProtectedLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const [csrf, setCsrf] = useState<CsrfTokenResponse | null>(null)
+
+    useEffect(() => {
+        // 페이지 렌더링 후 CSRF 토큰 받아오기
+        fetch('/api/csrf-token', {
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((data: CsrfTokenResponse) => {
+                setCsrf(data)
+            })
+            .catch((e) => {
+                console.error('Failed to fetch CSRF token', e)
+            })
+    }, [])
     const me = await fetchMe()
 
     if (!me) {
@@ -30,7 +51,11 @@ export default async function ProtectedLayout({
                     </Link>
                 )}
 
-                <a href="/logout" style={{ marginLeft: 16 }}>로그아웃</a>
+                <form method="post" action="/logout" style={{ display: 'inline' }}>
+                    {/* 로그인 페이지와 마찬가지로 csrf 재활용 or 별도 fetch */}
+                    {csrf && <input type="hidden" name={csrf.parameterName} value={csrf.token} />}
+                    <button type="submit">로그아웃</button>
+                </form>
             </header>
 
             <main style={{ padding: 24 }}>
