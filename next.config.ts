@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         destination: `${backendUrl}/logout`,
       },
       {
+        source: '/admin/:path*',
+        destination: `${backendUrl}/admin/:path*`,
+      },
+      {
         // 회원가입 등 API 공통 프록시
         source: '/api/:path*',
         destination: `${backendUrl}/api/:path*`,
